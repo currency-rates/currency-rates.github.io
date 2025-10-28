@@ -1,0 +1,208 @@
+name: Fetch Currency Rates
+
+on:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggers
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-rates:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          
+      - name: Create rates directory
+        run: mkdir -p rates
+        
+      - name: Fetch rates from exchangerate.host
+        continue-on-error: true
+        run: |
+          python << 'EOF'
+          import requests
+          import json
+          from datetime import datetime
+          
+          try:
+              # Free API - no key required
+              url = "https://api.exchangerate.host/latest?base=USD"
+              response = requests.get(url, timeout=10)
+              response.raise_for_status()
+              
+              data = response.json()
+              timestamp = datetime.utcnow().isoformat()
+              
+              result = {
+                  "source": "exchangerate.host",
+                  "timestamp": timestamp,
+                  "base": data.get("base", "USD"),
+                  "date": data.get("date"),
+                  "rates": data.get("rates", {})
+              }
+              
+              with open("rates/exchangerate-host.json", "w") as f:
+                  json.dump(result, f, indent=2)
+              
+              print(f"✓ Successfully fetched rates from exchangerate.host")
+              print(f"  Base: {result['base']}")
+              print(f"  Date: {result['date']}")
+              print(f"  Currencies: {len(result['rates'])}")
+          except Exception as e:
+              print(f"✗ Error fetching from exchangerate.host: {e}")
+              exit(1)
+          EOF
+          
+      - name: Fetch rates from frankfurter.app
+        continue-on-error: true
+        run: |
+          python << 'EOF'
+          import requests
+          import json
+          from datetime import datetime
+          
+          try:
+              # Free API - no key required
+              url = "https://api.frankfurter.app/latest?from=USD"
+              response = requests.get(url, timeout=10)
+              response.raise_for_status()
+              
+              data = response.json()
+              timestamp = datetime.utcnow().isoformat()
+              
+              result = {
+                  "source": "frankfurter.app",
+                  "timestamp": timestamp,
+                  "base": data.get("base", "USD"),
+                  "date": data.get("date"),
+                  "rates": data.get("rates", {})
+              }
+              
+              with open("rates/frankfurter.json", "w") as f:
+                  json.dump(result, f, indent=2)
+              
+              print(f"✓ Successfully fetched rates from frankfurter.app")
+              print(f"  Base: {result['base']}")
+              print(f"  Date: {result['date']}")
+              print(f"  Currencies: {len(result['rates'])}")
+          except Exception as e:
+              print(f"✗ Error fetching from frankfurter.app: {e}")
+              exit(1)
+          EOF
+          
+      - name: Fetch rates from open.er-api.com
+        continue-on-error: true
+        run: |
+          python << 'EOF'
+          import requests
+          import json
+          from datetime import datetime
+          
+          try:
+              # Free API - no key required
+              url = "https://open.er-api.com/v6/latest/USD"
+              response = requests.get(url, timeout=10)
+              response.raise_for_status()
+              
+              data = response.json()
+              timestamp = datetime.utcnow().isoformat()
+              
+              result = {
+                  "source": "open.er-api.com",
+                  "timestamp": timestamp,
+                  "base": data.get("base_code", "USD"),
+                  "date": data.get("time_last_update_utc"),
+                  "rates": data.get("rates", {})
+              }
+              
+              with open("rates/er-api.json", "w") as f:
+                  json.dump(result, f, indent=2)
+              
+              print(f"✓ Successfully fetched rates from open.er-api.com")
+              print(f"  Base: {result['base']}")
+              print(f"  Date: {result['date']}")
+              print(f"  Currencies: {len(result['rates'])}")
+          except Exception as e:
+              print(f"✗ Error fetching from open.er-api.com: {e}")
+              exit(1)
+          EOF
+          
+      - name: Create summary report
+        run: |
+          python << 'EOF'
+          import json
+          import os
+          from datetime import datetime
+          
+          summary = {
+              "generated_at": datetime.utcnow().isoformat(),
+              "sources": []
+          }
+          
+          rates_dir = "rates"
+          if os.path.exists(rates_dir):
+              for filename in sorted(os.listdir(rates_dir)):
+                  if filename.endswith('.json'):
+                      filepath = os.path.join(rates_dir, filename)
+                      try:
+                          with open(filepath, 'r') as f:
+                              data = json.load(f)
+                              summary["sources"].append({
+                                  "source": data.get("source"),
+                                  "base": data.get("base"),
+                                  "date": data.get("date"),
+                                  "currencies_count": len(data.get("rates", {}))
+                              })
+                      except Exception as e:
+                          print(f"Error reading {filename}: {e}")
+          
+          with open("rates/summary.json", "w") as f:
+              json.dump(summary, f, indent=2)
+          
+          print("\n=== Currency Rates Summary ===")
+          print(f"Generated at: {summary['generated_at']}")
+          print(f"\nSources fetched: {len(summary['sources'])}")
+          for source in summary["sources"]:
+              print(f"\n  • {source['source']}")
+              print(f"    Base: {source['base']}")
+              print(f"    Date: {source['date']}")
+              print(f"    Currencies: {source['currencies_count']}")
+          EOF
+          
+      - name: Upload rates as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: currency-rates
+          path: rates/
+          retention-days: 30
+          
+      - name: Display sample rates
+        run: |
+          echo "=== Sample Rates from First Source ==="
+          if [ -f rates/exchangerate-host.json ]; then
+            python << 'EOF'
+          import json
+          with open("rates/exchangerate-host.json", "r") as f:
+              data = json.load(f)
+              rates = data.get("rates", {})
+              sample_currencies = ["EUR", "GBP", "JPY", "CHF", "CAD", "AUD", "CNY"]
+              print(f"Base: {data.get('base')} ({data.get('date')})\n")
+              for curr in sample_currencies:
+                  if curr in rates:
+                      print(f"  {curr}: {rates[curr]}")
+          EOF
+          fi
