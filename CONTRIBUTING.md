@@ -28,8 +28,8 @@ Edit `.github/workflows/currency-rates.yml` and add a new step following this te
     from datetime import datetime
     
     try:
-        # Replace with your API URL
-        url = "https://api.your-source.com/latest?base=USD"
+        # TODO: Replace with your actual API URL
+        url = "https://api.example.com/latest?base=USD"  # Template - replace with real API
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         
@@ -107,7 +107,8 @@ If your source requires an API key, add it as a GitHub secret:
     from datetime import datetime
     
     api_key = os.environ.get('API_KEY')
-    url = f"https://api.your-source.com/latest?apikey={api_key}&base=USD"
+    # TODO: Replace with your actual API URL and parameter format
+    url = f"https://api.example.com/latest?apikey={api_key}&base=USD"  # Template
     # ... rest of the code
     EOF
 ```
