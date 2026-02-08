@@ -107,6 +107,17 @@ function main() {
 
   const latestDir = join(__dirname, '..', 'rates')
   writeFileSync(join(latestDir, 'rates.json'), JSON.stringify(sorted, null, 2))
+  const names = {}
+  for (const [code, { name }] of Object.entries(currencies)) {
+    names[code] = name
+  }
+  for (const [code, { name }] of Object.entries(crypto)) {
+    names[code] = name
+  }
+  writeFileSync(
+    join(latestDir, 'meta.json'),
+    JSON.stringify({ date, count: Object.keys(sorted).length, names }),
+  )
 
   console.log(`Wrote ${Object.keys(sorted).length} rates for ${date}`)
 }

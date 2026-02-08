@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Currency Rates</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+        background: #f5f7fa;
+        color: #1a1a2e;
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      header {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        padding: 28px 0;
+      }
+
+      .header-inner {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .logo {
+        flex-shrink: 0;
+      }
+
+      .logo svg {
+        display: block;
+      }
+
+      header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      header p {
+        color: #8888a8;
+        font-size: 13px;
+        margin-top: 2px;
+      }
+
+      /* converter */
+      .converter {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+
+      .converter-row {
+        display: flex;
+        gap: 10px;
+        align-items: stretch;
+      }
+
+      .converter-field {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .converter-field label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .converter-field input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 20px;
+        font-weight: 600;
+        outline: none;
+        font-family:
+          'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
+          monospace;
+        transition: border-color 0.2s;
+        background: #fafafa;
+      }
+
+      .converter-field input:focus {
+        border-color: #1a1a2e;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08);
+        background: #fff;
+      }
+
+      .converter-field select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        outline: none;
+        background: #fafafa;
+        cursor: pointer;
+        transition: border-color 0.2s;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+      }
+
+      .converter-field select:focus {
+        border-color: #1a1a2e;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08);
+      }
+
+      .converter-swap {
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 4px;
+      }
+
+      .converter-swap button {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fafafa;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+        flex-shrink: 0;
+      }
+
+      .converter-swap button:hover {
+        background: #f0f0f0;
+        border-color: #ccc;
+      }
+
+      .converter-info {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #888;
+        font-family:
+          'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
+          monospace;
+      }
+
+      /* api docs */
+      .api-docs {
+        margin: 32px 0;
+      }
+
+      .api-docs h2 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        letter-spacing: -0.3px;
+      }
+
+      .api-docs h3 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #555;
+        margin: 20px 0 8px;
+      }
+
+      .api-docs h3 a {
+        color: #1a1a2e;
+      }
+
+      .api-docs p {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 12px;
+      }
+
+      .api-docs code {
+        font-family:
+          'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
+          monospace;
+        font-size: 13px;
+      }
+
+      .api-docs p code {
+        background: #eee;
+        padding: 2px 6px;
+        border-radius: 4px;
+      }
+
+      .endpoint {
+        margin-bottom: 12px;
+      }
+
+      .endpoint-label {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+      }
+
+      .endpoint pre {
+        background: #1a1a2e;
+        color: #e0e0f0;
+        padding: 12px 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .api-note {
+        font-size: 13px;
+        color: #888;
+        margin-top: 12px;
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px 0 36px;
+        font-size: 12px;
+        color: #aaa;
+      }
+
+      footer a {
+        color: #666;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        header {
+          padding: 20px 0;
+        }
+
+        .logo svg {
+          width: 40px;
+          height: 40px;
+        }
+
+        header h1 {
+          font-size: 18px;
+        }
+
+        .converter {
+          padding: 16px;
+        }
+
+        .converter-row {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .converter-swap {
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+        }
+
+        .converter-swap button {
+          transform: rotate(90deg);
+        }
+
+        .converter-field input {
+          font-size: 18px;
+        }
+
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="header-inner">
+          <div class="logo">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="18" cy="20" r="14" fill="#4a9eff" opacity="0.7" />
+              <circle cx="30" cy="28" r="14" fill="#4a9eff" opacity="0.4" />
+            </svg>
+          </div>
+          <div>
+            <h1>Currency Rates</h1>
+            <p id="subtitle">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="converter" id="converter" style="display: none">
+        <div class="converter-row">
+          <div class="converter-field">
+            <label for="fromAmount">Amount</label>
+            <input type="text" id="fromAmount" inputmode="decimal" value="1" />
+          </div>
+          <div class="converter-field">
+            <label for="fromCurrency">From</label>
+            <select id="fromCurrency"></select>
+          </div>
+          <div class="converter-swap">
+            <button id="swapBtn" type="button" title="Swap currencies">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 6h10M10 2l4 4-4 4" />
+                <path d="M14 12H4M8 16l-4-4 4-4" />
+              </svg>
+            </button>
+          </div>
+          <div class="converter-field">
+            <label for="toAmount">Converted</label>
+            <input type="text" id="toAmount" inputmode="decimal" />
+          </div>
+          <div class="converter-field">
+            <label for="toCurrency">To</label>
+            <select id="toCurrency"></select>
+          </div>
+        </div>
+        <div class="converter-info" id="converterInfo"></div>
+      </div>
+
+      <section class="api-docs" id="api">
+        <h2>API</h2>
+        <p>
+          All rates are published as static JSON files. No authentication
+          required. Base currency is <strong>CHF</strong> (Swiss franc).
+        </p>
+
+        <h3>Endpoints</h3>
+        <div class="endpoint">
+          <div class="endpoint-label">Latest rates</div>
+          <pre><code>curl https://currency-rates.github.io/rates.json</code></pre>
+        </div>
+        <div class="endpoint">
+          <div class="endpoint-label">Rates for a specific date</div>
+          <pre><code>curl https://currency-rates.github.io/2026-02-08/rates.json</code></pre>
+        </div>
+        <div class="endpoint">
+          <div class="endpoint-label">Metadata (date, currency names)</div>
+          <pre><code>curl https://currency-rates.github.io/meta.json</code></pre>
+        </div>
+
+        <h3>
+          Examples with <a href="https://fx.wtf">fx</a>
+        </h3>
+        <div class="endpoint">
+          <div class="endpoint-label">Get USD/CHF rate</div>
+          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx .USD</code></pre>
+        </div>
+        <div class="endpoint">
+          <div class="endpoint-label">Convert 100 USD to EUR</div>
+          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx 'x =&gt; 100 / x.USD * x.EUR'</code></pre>
+        </div>
+        <div class="endpoint">
+          <div class="endpoint-label">Interactive exploration</div>
+          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx</code></pre>
+        </div>
+
+        <h3>Response format</h3>
+        <p>
+          <code>rates.json</code> returns an object mapping currency codes to
+          their exchange rate relative to CHF:
+        </p>
+        <pre><code>{
+  "EUR": 1.0908,
+  "USD": 1.2892,
+  "GBP": 0.9468,
+  "BTC": 0.00001836,
+  ...
+}</code></pre>
+        <p class="api-note">
+          Rates are updated daily at ~23:00 UTC. Each rate is the median across
+          multiple providers (Aviasales, Coinbase, CoinGecko, CoinRanking,
+          OpenExchangeRates).
+        </p>
+      </section>
+    </div>
+
+    <footer>
+      <a href="https://github.com/currency-rates">currency-rates</a> &middot;
+      Base currency: CHF &middot; Median across multiple providers
+    </footer>
+
+    <script>
+      let currencyNames = {}
+      let rates = {}
+      let lastEditedField = 'from'
+
+      const POPULAR = [
+        'USD',
+        'EUR',
+        'GBP',
+        'CHF',
+        'JPY',
+        'CNY',
+        'CAD',
+        'AUD',
+        'BTC',
+        'ETH',
+      ]
+
+      function formatRate(value) {
+        if (value >= 1000)
+          return value.toLocaleString('en-US', { maximumFractionDigits: 2 })
+        if (value >= 1)
+          return value.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 4,
+          })
+        if (value >= 0.001)
+          return value.toLocaleString('en-US', {
+            minimumFractionDigits: 4,
+            maximumFractionDigits: 6,
+          })
+        return value.toLocaleString('en-US', {
+          minimumFractionDigits: 6,
+          maximumFractionDigits: 10,
+        })
+      }
+
+      function convert(amount, from, to) {
+        const fromRate = rates[from]
+        const toRate = rates[to]
+        if (!fromRate || !toRate) return NaN
+        return (amount / fromRate) * toRate
+      }
+
+      function updateConverter() {
+        const fromSel = document.getElementById('fromCurrency')
+        const toSel = document.getElementById('toCurrency')
+        const fromInput = document.getElementById('fromAmount')
+        const toInput = document.getElementById('toAmount')
+        const info = document.getElementById('converterInfo')
+
+        const from = fromSel.value
+        const to = toSel.value
+
+        if (lastEditedField === 'from') {
+          const amount = parseFloat(fromInput.value)
+          if (isNaN(amount)) {
+            toInput.value = ''
+            info.textContent = ''
+            return
+          }
+          const result = convert(amount, from, to)
+          toInput.value = isNaN(result) ? '' : formatRate(result)
+        } else {
+          const amount = parseFloat(toInput.value)
+          if (isNaN(amount)) {
+            fromInput.value = ''
+            info.textContent = ''
+            return
+          }
+          const result = convert(amount, to, from)
+          fromInput.value = isNaN(result) ? '' : formatRate(result)
+        }
+
+        const unitRate = convert(1, from, to)
+        if (!isNaN(unitRate)) {
+          info.textContent = `1 ${from} = ${formatRate(unitRate)} ${to}`
+        }
+      }
+
+      function initConverter() {
+        const codes = Object.keys(rates).sort()
+        const fromSel = document.getElementById('fromCurrency')
+        const toSel = document.getElementById('toCurrency')
+
+        function buildOptions(select, selected) {
+          const popular = POPULAR.filter((c) => rates[c])
+          const rest = codes.filter((c) => !popular.includes(c))
+
+          let html = '<optgroup label="Popular">'
+          for (const code of popular) {
+            const name = currencyNames[code] || ''
+            const sel = code === selected ? ' selected' : ''
+            html += `<option value="${code}"${sel}>${code} \u2013 ${name}</option>`
+          }
+          html += '</optgroup><optgroup label="All currencies">'
+          for (const code of rest) {
+            const name = currencyNames[code] || ''
+            const sel = code === selected ? ' selected' : ''
+            html += `<option value="${code}"${sel}>${code} \u2013 ${name}</option>`
+          }
+          html += '</optgroup>'
+          select.innerHTML = html
+        }
+
+        buildOptions(fromSel, 'USD')
+        buildOptions(toSel, 'EUR')
+
+        const fromInput = document.getElementById('fromAmount')
+        const toInput = document.getElementById('toAmount')
+
+        fromInput.addEventListener('input', () => {
+          lastEditedField = 'from'
+          updateConverter()
+        })
+        toInput.addEventListener('input', () => {
+          lastEditedField = 'to'
+          updateConverter()
+        })
+        fromSel.addEventListener('change', updateConverter)
+        toSel.addEventListener('change', updateConverter)
+
+        document.getElementById('swapBtn').addEventListener('click', () => {
+          const tmpCode = fromSel.value
+          fromSel.value = toSel.value
+          toSel.value = tmpCode
+          updateConverter()
+        })
+
+        document.getElementById('converter').style.display = ''
+        updateConverter()
+      }
+
+      async function init() {
+        try {
+          const [ratesRes, metaRes] = await Promise.all([
+            fetch('rates.json'),
+            fetch('meta.json').catch(() => null),
+          ])
+
+          if (!ratesRes.ok) throw new Error('Failed to load rates')
+
+          rates = await ratesRes.json()
+          let date = null
+
+          if (metaRes && metaRes.ok) {
+            const meta = await metaRes.json()
+            date = meta.date
+            if (meta.names) currencyNames = meta.names
+          }
+
+          const subtitle = document.getElementById('subtitle')
+          subtitle.textContent = date
+            ? `Base currency: CHF \u00B7 Updated ${date}`
+            : 'Base currency: CHF'
+
+          initConverter()
+        } catch (e) {
+          document.getElementById('subtitle').textContent =
+            'Failed to load rates'
+        }
+      }
+
+      init()
+    </script>
+  </body>
+</html>
