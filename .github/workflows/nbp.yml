@@ -3,7 +3,7 @@ name: NBP
 on:
   pull_request:
   schedule:
-    - cron: '40 8 * * *'
+    - cron: '40 */4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,7 +26,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
           git diff --cached --quiet && exit 0
-          git commit -m "nbp $(date -u +%Y-%m-%d)"
+          git commit -m "nbp $(date -u +'%Y-%m-%d %H:%M')"
           for i in 1 2 3 4 5; do
             git pull --rebase origin master && git push && exit 0
             sleep $((i * 5))
