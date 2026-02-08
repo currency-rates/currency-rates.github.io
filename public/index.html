@@ -115,6 +115,11 @@
         color: #999;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        transition: color 0.15s;
+      }
+
+      .converter-field:focus-within label {
+        color: #1a1a2e;
       }
 
       .converter-field input {
@@ -171,15 +176,13 @@
         color: #1a1a2e;
         transition:
           background 0.2s,
-          border-color 0.2s,
-          transform 0.2s;
+          border-color 0.2s;
         flex-shrink: 0;
       }
 
       .converter-swap button:hover {
         background: #f0f2f5;
         border-color: #ccc;
-        transform: rotate(180deg);
       }
 
       .converter-info {
@@ -322,49 +325,41 @@
         }
 
         .converter {
-          padding: 20px;
+          padding: 0;
+          background: none;
+          box-shadow: none;
         }
 
         .converter-row {
           flex-direction: column;
-          gap: 0;
+          gap: 12px;
         }
 
         .converter-group {
           border-radius: 12px;
-        }
-
-        .converter-row > .converter-group:first-child {
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-          border-bottom: none;
-        }
-
-        .converter-row > .converter-group:last-child {
-          border-top-left-radius: 0;
-          border-top-right-radius: 0;
+          padding: 16px;
+          gap: 10px;
+          background: #fff;
+          box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
         .converter-swap {
           align-items: center;
           justify-content: center;
-          margin: -22px auto;
-          position: relative;
-          z-index: 1;
-          height: 0;
+          margin: -6px 0;
         }
 
         .converter-swap button {
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           transform: rotate(90deg);
-        }
-
-        .converter-swap button:hover {
-          transform: rotate(270deg);
         }
 
         .converter-field input {
           font-size: 24px;
+        }
+
+        .converter-field select {
+          font-size: 15px;
+          padding: 10px 32px 10px 0;
         }
 
       }
@@ -416,8 +411,8 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <path d="M4 6h10M10 2l4 4-4 4" />
-                <path d="M14 12H4M8 16l-4-4 4-4" />
+                <path d="M4 5h10M10 1l4 4-4 4" />
+                <path d="M14 13H4M8 17l-4-4 4-4" />
               </svg>
             </button>
           </div>
