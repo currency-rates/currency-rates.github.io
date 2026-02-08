@@ -28,7 +28,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add rates/
+          git add public/
           git diff --cached --quiet || git commit -m "publish $(date -u +%Y-%m-%d)"
           git pull --rebase
           git push
@@ -47,6 +47,6 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: rates
+          path: public
       - id: deployment
         uses: actions/deploy-pages@v4

@@ -101,11 +101,11 @@ function main() {
       return obj
     }, {})
 
-  const ratesDir = join(__dirname, '..', 'rates', date)
+  const ratesDir = join(__dirname, '..', 'public', date)
   mkdirSync(ratesDir, { recursive: true })
   writeFileSync(join(ratesDir, 'rates.json'), JSON.stringify(sorted, null, 2))
 
-  const latestDir = join(__dirname, '..', 'rates')
+  const latestDir = join(__dirname, '..', 'public')
   writeFileSync(join(latestDir, 'rates.json'), JSON.stringify(sorted, null, 2))
   const names = {}
   for (const [code, { name }] of Object.entries(currencies)) {
