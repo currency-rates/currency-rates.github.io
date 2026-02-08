@@ -1,4 +1,4 @@
-# currency-rates
+# Currency Rates
 
 Daily exchange rates for 170+ fiat currencies and cryptocurrencies, published as static JSON on GitHub Pages.
 
