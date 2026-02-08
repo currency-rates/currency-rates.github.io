@@ -204,21 +204,14 @@
 
       /* chart */
       .chart-container {
-        margin-top: 20px;
+        margin-top: 12px;
         position: relative;
       }
 
       .chart-container svg {
         width: 100%;
         display: block;
-      }
-
-      .chart-line {
-        fill: none;
-        stroke: #1a1a2e;
-        stroke-width: 1.5;
-        stroke-linejoin: round;
-        stroke-linecap: round;
+        overflow: visible;
       }
 
       .chart-grid {
@@ -251,7 +244,7 @@
 
       .chart-hover-label {
         fill: #1a1a2e;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 600;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
           Helvetica, Arial, sans-serif;
@@ -259,15 +252,11 @@
         transition: opacity 0.12s;
       }
 
-      .chart-end-dot {
-        fill: #1a1a2e;
-      }
-
       .chart-loading {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 140px;
+        height: 50px;
         color: #ccc;
         font-size: 13px;
       }
@@ -589,6 +578,7 @@
 
     <script>
       let currencyNames = {}
+      let currencyDp = {}
       let rates = {}
       let lastEditedField = 'from'
       const historyCache = {}
@@ -626,6 +616,17 @@
         })
       }
 
+      function formatAmount(value, currency) {
+        const dp = currencyDp[currency]
+        if (dp != null) {
+          return value.toLocaleString('en-US', {
+            minimumFractionDigits: dp,
+            maximumFractionDigits: dp,
+          })
+        }
+        return formatRate(value)
+      }
+
       function convert(amount, from, to) {
         const fromRate = rates[from]
         const toRate = rates[to]
@@ -651,7 +652,7 @@
             return
           }
           const result = convert(amount, from, to)
-          toInput.value = isNaN(result) ? '' : formatRate(result)
+          toInput.value = isNaN(result) ? '' : formatAmount(result, to)
         } else {
           const amount = parseFloat(toInput.value)
           if (isNaN(amount)) {
@@ -660,7 +661,7 @@
             return
           }
           const result = convert(amount, to, from)
-          fromInput.value = isNaN(result) ? '' : formatRate(result)
+          fromInput.value = isNaN(result) ? '' : formatAmount(result, from)
         }
 
         const unitRate = convert(1, from, to)
@@ -741,6 +742,7 @@
             const meta = await metaRes.json()
             date = meta.date
             if (meta.names) currencyNames = meta.names
+            if (meta.dp) currencyDp = meta.dp
           }
 
           const subtitle = document.getElementById('subtitle')
@@ -796,20 +798,41 @@
           .map((r) => r.value)
       }
 
+      const vRound = (n) => Math.round(n * 100) / 100
+      const vec = (x, y) => ({
+        x,
+        y,
+        toString() {
+          return `${vRound(this.x)} ${vRound(this.y)}`
+        },
+      })
+      const vNorm = (v) => Math.sqrt(v.x * v.x + v.y * v.y)
+      const vUnit = (v, s) => {
+        const n = vNorm(v)
+        return n === 0 ? vec(0, 0) : vec((s * v.x) / n, (s * v.y) / n)
+      }
+      const vAdd = (a, b) => vec(a.x + b.x, a.y + b.y)
+      const vSub = (a, b) => vec(a.x - b.x, a.y - b.y)
+
       function smoothPath(coords) {
-        if (coords.length < 2) return ''
-        const f = (n) => n.toFixed(2)
-        let d = `M${f(coords[0].x)},${f(coords[0].y)}`
-        for (let i = 0; i < coords.length - 1; i++) {
-          const p0 = coords[Math.max(0, i - 1)]
-          const p1 = coords[i]
-          const p2 = coords[i + 1]
-          const p3 = coords[Math.min(coords.length - 1, i + 2)]
-          const t = 0.25
-          d += ` C${f(p1.x + (p2.x - p0.x) * t)},${f(p1.y + (p2.y - p0.y) * t)} ${f(p2.x - (p3.x - p1.x) * t)},${f(p2.y - (p3.y - p1.y) * t)} ${f(p2.x)},${f(p2.y)}`
+        const pts = coords.map((c) => vec(c.x, c.y))
+        if (pts.length < 2) return ''
+        if (pts.length === 2) return `M${pts[0]} L${pts[1]}`
+        const basis = 5
+        const c1 = vAdd(pts[0], vUnit(vSub(pts[1], pts[0]), basis))
+        const c2 = vAdd(pts[1], vUnit(vSub(pts[0], pts[2]), basis))
+        let d = `M${pts[0]} C ${c1}, ${c2}, ${pts[1]}`
+        for (let i = 2; i < pts.length; i++) {
+          const prev = pts[i - 1]
+          const curr = pts[i]
+          const next = pts[i + 1] || curr
+          const c = vAdd(curr, vUnit(vSub(prev, next), basis))
+          d += ` S ${c}, ${curr}`
         }
         return d
       }
+
+      const CHART_GRADIENT = ['#1a1a2e', '#16213e']
 
       function renderChart(data, from, to) {
         const container = document.getElementById('chart')
@@ -839,55 +862,47 @@
         const max = Math.max(...values)
         const range = max - min || max * 0.01
 
-        const pad = { top: 20, right: 52, bottom: 24, left: 8 }
+        const pad = { top: 4, right: 4, bottom: 20, left: 4 }
         const w = 500
-        const h = 150
+        const h = 54
         const plotW = w - pad.left - pad.right
         const plotH = h - pad.top - pad.bottom
 
-        const coords = points.map((p, i) => {
-          const x = pad.left + (i / (points.length - 1)) * plotW
-          const y = pad.top + plotH - ((p.value - min) / range) * plotH
-          return { x, y }
-        })
+        const coords = points.map((p, i) => ({
+          x: pad.left + (i / (points.length - 1)) * plotW,
+          y: pad.top + plotH - ((p.value - min) / range) * plotH,
+        }))
 
         const linePath = smoothPath(coords)
-        const last = coords[coords.length - 1]
         const first = coords[0]
-        const areaPath = `${linePath} L${last.x.toFixed(2)},${(pad.top + plotH).toFixed(2)} L${first.x.toFixed(2)},${(pad.top + plotH).toFixed(2)} Z`
+        const last = coords[coords.length - 1]
+        const bottom = vRound(pad.top + plotH)
+        const areaPath = `${linePath} L${vRound(last.x)} ${bottom} L${vRound(first.x)} ${bottom} Z`
 
-        const gridLines = [0, 0.5, 1].map((frac) => {
-          const y = pad.top + plotH - frac * plotH
-          const val = min + frac * range
-          return `<line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" class="chart-grid"/>
-            <text x="${w - pad.right + 4}" y="${y + 3.5}" class="chart-label">${formatRate(val)}</text>`
-        })
-
-        const dateIndices = [
-          0,
-          Math.floor(points.length / 2),
-          points.length - 1,
-        ]
-        const dateLabels = dateIndices.map(
+        const dateLabels = [0, points.length - 1].map(
           (i) =>
-            `<text x="${coords[i].x}" y="${h - 4}" class="chart-label" text-anchor="middle">${points[i].label}</text>`,
+            `<text x="${coords[i].x}" y="${h}" class="chart-label" text-anchor="${i === 0 ? 'start' : 'end'}">${points[i].label}</text>`,
         )
 
         container.innerHTML = `<svg viewBox="0 0 ${w} ${h}">
           <defs>
+            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="${CHART_GRADIENT[0]}"/>
+              <stop offset="100%" stop-color="${CHART_GRADIENT[1]}"/>
+            </linearGradient>
             <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#1a1a2e" stop-opacity="0.1"/>
               <stop offset="100%" stop-color="#1a1a2e" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          ${gridLines.join('')}
           <path d="${areaPath}" fill="url(#areaGrad)"/>
-          <path d="${linePath}" class="chart-line"/>
-          <circle cx="${last.x}" cy="${last.y}" r="2.5" class="chart-end-dot"/>
+          <path d="${linePath}" fill="none" stroke="url(#lineGrad)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="${first.x}" cy="${first.y}" r="2.5" fill="${CHART_GRADIENT[0]}"/>
+          <circle cx="${last.x}" cy="${last.y}" r="2.5" fill="${CHART_GRADIENT[1]}"/>
           ${dateLabels.join('')}
-          <line class="chart-hover-line" x1="0" y1="${pad.top}" x2="0" y2="${pad.top + plotH}"/>
-          <circle class="chart-hover-dot" r="3.5"/>
-          <text class="chart-hover-label" text-anchor="middle" y="12"></text>
+          <line class="chart-hover-line" x1="0" y1="${pad.top}" x2="0" y2="${bottom}"/>
+          <circle class="chart-hover-dot" r="3"/>
+          <text class="chart-hover-label" text-anchor="middle" y="${h}"></text>
           <rect x="${pad.left}" y="0" width="${plotW}" height="${h}" fill="transparent" style="cursor:crosshair"/>
         </svg>`
 
@@ -918,8 +933,12 @@
           hoverDot.setAttribute('cx', cx)
           hoverDot.setAttribute('cy', cy)
           hoverDot.style.opacity = '1'
-          hoverLabel.setAttribute('x', cx)
-          hoverLabel.textContent = `${points[closest].label}: ${formatRate(points[closest].value)}`
+          const labelX = Math.max(30, Math.min(w - 30, cx))
+          hoverLabel.setAttribute('x', labelX)
+          const rate = points[closest].value
+          const amount = parseFloat(document.getElementById('fromAmount').value) || 1
+          const converted = formatAmount(rate * amount, to)
+          hoverLabel.textContent = `${points[closest].label}: ${converted} ${to}`
           hoverLabel.style.opacity = '1'
         }
 

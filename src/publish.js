@@ -121,6 +121,13 @@ function main() {
   for (const [code, { name }] of Object.entries(crypto)) {
     names[code] = name
   }
+  const dp = {}
+  for (const [code, info] of Object.entries(currencies)) {
+    dp[code] = info.dp
+  }
+  for (const [code, info] of Object.entries(crypto)) {
+    dp[code] = info.dp
+  }
   const providers = {}
   for (const [symbol, entries] of Object.entries(ratesMap)) {
     providers[symbol] = medianProviders(entries)
@@ -131,6 +138,7 @@ function main() {
       date: now.toISOString().slice(0, 16).replace('T', ' '),
       count: Object.keys(sorted).length,
       names,
+      dp,
       providers,
     }),
   )
