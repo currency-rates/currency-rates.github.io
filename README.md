@@ -60,6 +60,10 @@ Median across 11 providers, updated every 4 hours:
 
 Rates deviating >10% from median are flagged.
 
+## Used by
+
+- [numbr.dev](https://numbr.dev) — a smart calculator combined with a notepad
+
 ## Development
 
 ```sh
