@@ -3,7 +3,7 @@ name: BAZG
 on:
   pull_request:
   schedule:
-    - cron: '48 */4 * * *'
+    - cron: '50 */4 * * *'
   workflow_dispatch:
 
 permissions:
