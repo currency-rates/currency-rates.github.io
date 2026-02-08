@@ -13,18 +13,9 @@ if (!apiKey) {
 
 const headers = { 'x-access-token': apiKey }
 
-// Fetch coins priced in USD (default)
-const coinsResp = await fetch(
-  'https://api.coinranking.com/v2/coins?limit=100',
-  { headers },
-)
-if (!coinsResp.ok)
-  throw new Error(`HTTP ${coinsResp.status} ${coinsResp.statusText}`)
-const coinsData = await coinsResp.json()
-
-// Look up CHF reference currency to get USD/CHF rate
+// Look up CHF fiat reference currency UUID
 const refResp = await fetch(
-  'https://api.coinranking.com/v2/reference-currencies?search=CHF',
+  'https://api.coinranking.com/v2/reference-currencies?types[]=fiat&search=CHF',
   { headers },
 )
 if (!refResp.ok) throw new Error(`HTTP ${refResp.status} ${refResp.statusText}`)
@@ -32,21 +23,25 @@ const refData = await refResp.json()
 
 const chfCurrency = refData.data.currencies.find((c) => c.symbol === 'CHF')
 if (!chfCurrency) throw new Error('CHF not found in reference currencies')
-// exchangeRate is CHF per 1 USD, so 1/exchangeRate = USD per 1 CHF
-const usdToChf = 1 / +chfCurrency.exchangeRate
-if (!usdToChf || !isFinite(usdToChf))
-  throw new Error('Could not determine USD/CHF rate')
 
-// Price is in USD per 1 coin. Convert to CHF base.
-// rate = 1 / (usdPrice * usdToChf) = how many coins per 1 CHF
+// Fetch coins priced directly in CHF
+const coinsResp = await fetch(
+  `https://api.coinranking.com/v2/coins?limit=100&referenceCurrencyUuid=${chfCurrency.uuid}`,
+  { headers },
+)
+if (!coinsResp.ok)
+  throw new Error(`HTTP ${coinsResp.status} ${coinsResp.statusText}`)
+const coinsData = await coinsResp.json()
+
+// Price is in CHF per 1 coin. Rate = 1 / price (how many coins per 1 CHF)
 const rates = {}
 for (const coin of coinsData.data.coins) {
   const s = coin.symbol.toUpperCase()
   if (!(s in config)) continue
   if (s in rates) continue
-  const usdPrice = +coin.price
-  if (!usdPrice) continue
-  rates[s] = 1 / (usdPrice * usdToChf)
+  const chfPrice = +coin.price
+  if (!chfPrice) continue
+  rates[s] = 1 / chfPrice
 }
 
 const sorted = Object.keys(rates)
