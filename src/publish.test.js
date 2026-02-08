@@ -4,6 +4,7 @@ import { join } from 'path'
 import { tmpdir } from 'os'
 import {
   median,
+  medianProviders,
   collectRates,
   computeMedianRates,
   checkDeviations,
@@ -25,6 +26,29 @@ describe('median', () => {
 
   it('returns average for two values', () => {
     expect(median([10, 20])).toBe(15)
+  })
+})
+
+describe('medianProviders', () => {
+  it('returns the middle provider for odd count', () => {
+    const entries = [
+      { provider: 'a', value: 1.0 },
+      { provider: 'b', value: 1.2 },
+      { provider: 'c', value: 1.1 },
+    ]
+    expect(medianProviders(entries)).toEqual(['c'])
+  })
+
+  it('returns two sorted providers for even count', () => {
+    const entries = [
+      { provider: 'b', value: 1.2 },
+      { provider: 'a', value: 1.0 },
+    ]
+    expect(medianProviders(entries)).toEqual(['a', 'b'])
+  })
+
+  it('returns the single provider', () => {
+    expect(medianProviders([{ provider: 'x', value: 42 }])).toEqual(['x'])
   })
 })
 

@@ -22,6 +22,13 @@ export function collectRates(providerFiles) {
   return ratesMap
 }
 
+export function medianProviders(entries) {
+  const sorted = [...entries].sort((a, b) => a.value - b.value)
+  const mid = Math.floor(sorted.length / 2)
+  if (sorted.length % 2 !== 0) return [sorted[mid].provider]
+  return [sorted[mid - 1].provider, sorted[mid].provider].sort()
+}
+
 export function computeMedianRates(ratesMap) {
   const result = {}
   for (const [symbol, entries] of Object.entries(ratesMap)) {
@@ -116,7 +123,7 @@ function main() {
   }
   const providers = {}
   for (const [symbol, entries] of Object.entries(ratesMap)) {
-    providers[symbol] = entries.map((e) => e.provider).sort()
+    providers[symbol] = medianProviders(entries)
   }
   writeFileSync(
     join(latestDir, 'meta.json'),
