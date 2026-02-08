@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   publish:
@@ -30,3 +32,21 @@ jobs:
           git diff --cached --quiet || git commit -m "publish $(date -u +%Y-%m-%d)"
           git pull --rebase
           git push
+
+  deploy-pages:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: master
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: rates
+      - id: deployment
+        uses: actions/deploy-pages@v4
