@@ -32,7 +32,7 @@ Returns an object mapping currency codes to CHF-based exchange rates:
 ### Get rates for a specific date
 
 ```sh
-curl https://currency-rates.github.io/2026-02-08/rates.json
+curl https://currency-rates.github.io/YYYY-MM-DD/rates.json
 ```
 
 ### Get metadata
@@ -54,7 +54,7 @@ curl -s https://currency-rates.github.io/rates.json | fx .USD
 Convert 100 USD to EUR:
 
 ```sh
-curl -s https://currency-rates.github.io/rates.json | fx '100 / .USD * .EUR'
+curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.EUR'
 ```
 
 Interactive exploration:

@@ -4,6 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Currency Rates</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta property="og:title" content="Currency Rates" />
+    <meta
+      property="og:description"
+      content="Daily exchange rates for 170+ currencies. Free JSON API."
+    />
+    <meta property="og:image" content="https://currency-rates.github.io/logo.png" />
+    <meta property="og:url" content="https://currency-rates.github.io/" />
     <style>
       *,
       *::before,
@@ -45,7 +53,7 @@
         flex-shrink: 0;
       }
 
-      .logo svg {
+      .logo img {
         display: block;
       }
 
@@ -236,6 +244,38 @@
         line-height: 1.6;
       }
 
+      .hl-cmd {
+        color: #7bc4ff;
+      }
+
+      .hl-flag {
+        color: #8888a8;
+      }
+
+      .hl-url {
+        color: #a8d8a8;
+      }
+
+      .hl-pipe {
+        color: #e8a0bf;
+      }
+
+      .hl-str {
+        color: #f0c878;
+      }
+
+      .hl-key {
+        color: #7bc4ff;
+      }
+
+      .hl-val {
+        color: #f0c878;
+      }
+
+      .hl-brace {
+        color: #8888a8;
+      }
+
       .api-note {
         font-size: 13px;
         color: #888;
@@ -263,7 +303,7 @@
           padding: 20px 0;
         }
 
-        .logo svg {
+        .logo img {
           width: 40px;
           height: 40px;
         }
@@ -303,16 +343,7 @@
       <div class="container">
         <div class="header-inner">
           <div class="logo">
-            <svg
-              width="48"
-              height="48"
-              viewBox="0 0 48 48"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="18" cy="20" r="14" fill="#4a9eff" opacity="0.7" />
-              <circle cx="30" cy="28" r="14" fill="#4a9eff" opacity="0.4" />
-            </svg>
+            <img src="logo.svg" alt="" width="48" height="48" />
           </div>
           <div>
             <h1>Currency Rates</h1>
@@ -372,15 +403,15 @@
         <h3>Endpoints</h3>
         <div class="endpoint">
           <div class="endpoint-label">Latest rates</div>
-          <pre><code>curl https://currency-rates.github.io/rates.json</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-url">https://currency-rates.github.io/rates.json</span></code></pre>
         </div>
         <div class="endpoint">
           <div class="endpoint-label">Rates for a specific date</div>
-          <pre><code>curl https://currency-rates.github.io/2026-02-08/rates.json</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-url">https://currency-rates.github.io/YYYY-MM-DD/rates.json</span></code></pre>
         </div>
         <div class="endpoint">
           <div class="endpoint-label">Metadata (date, currency names)</div>
-          <pre><code>curl https://currency-rates.github.io/meta.json</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-url">https://currency-rates.github.io/meta.json</span></code></pre>
         </div>
 
         <h3>
@@ -388,15 +419,15 @@
         </h3>
         <div class="endpoint">
           <div class="endpoint-label">Get USD/CHF rate</div>
-          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx .USD</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-flag">-s</span> <span class="hl-url">https://currency-rates.github.io/rates.json</span> <span class="hl-pipe">|</span> <span class="hl-cmd">fx</span> .USD</code></pre>
         </div>
         <div class="endpoint">
           <div class="endpoint-label">Convert 100 USD to EUR</div>
-          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx 'x =&gt; 100 / x.USD * x.EUR'</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-flag">-s</span> <span class="hl-url">https://currency-rates.github.io/rates.json</span> <span class="hl-pipe">|</span> <span class="hl-cmd">fx</span> <span class="hl-str">'x =&gt; 100 / x.USD * x.EUR'</span></code></pre>
         </div>
         <div class="endpoint">
           <div class="endpoint-label">Interactive exploration</div>
-          <pre><code>curl -s https://currency-rates.github.io/rates.json | fx</code></pre>
+          <pre><code><span class="hl-cmd">curl</span> <span class="hl-flag">-s</span> <span class="hl-url">https://currency-rates.github.io/rates.json</span> <span class="hl-pipe">|</span> <span class="hl-cmd">fx</span></code></pre>
         </div>
 
         <h3>Response format</h3>
@@ -404,13 +435,13 @@
           <code>rates.json</code> returns an object mapping currency codes to
           their exchange rate relative to CHF:
         </p>
-        <pre><code>{
-  "EUR": 1.0908,
-  "USD": 1.2892,
-  "GBP": 0.9468,
-  "BTC": 0.00001836,
+        <pre><code><span class="hl-brace">{</span>
+  <span class="hl-key">"EUR"</span>: <span class="hl-val">1.0908</span>,
+  <span class="hl-key">"USD"</span>: <span class="hl-val">1.2892</span>,
+  <span class="hl-key">"GBP"</span>: <span class="hl-val">0.9468</span>,
+  <span class="hl-key">"BTC"</span>: <span class="hl-val">0.00001836</span>,
   ...
-}</code></pre>
+<span class="hl-brace">}</span></code></pre>
         <p class="api-note">
           Rates are updated daily at ~23:00 UTC. Each rate is the median across
           multiple providers (Aviasales, Coinbase, CoinGecko, CoinRanking,
