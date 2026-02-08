@@ -7,6 +7,7 @@ No auth. No API keys. No rate limits. Just `curl`.
 Base currency: **CHF**
 
 Mirrors:
+
 - https://currency-rates.github.io
 - https://currency-rates.pages.dev
 
