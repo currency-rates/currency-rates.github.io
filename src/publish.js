@@ -128,7 +128,7 @@ function main() {
   writeFileSync(
     join(latestDir, 'meta.json'),
     JSON.stringify({
-      date,
+      date: now.toISOString().slice(0, 16).replace('T', ' '),
       count: Object.keys(sorted).length,
       names,
       providers,
