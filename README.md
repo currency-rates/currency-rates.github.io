@@ -6,6 +6,10 @@ No auth. No API keys. No rate limits. Just `curl`.
 
 Base currency: **CHF**
 
+Mirrors:
+- https://currency-rates.github.io
+- https://currency-rates.pages.dev
+
 ## Usage
 
 ```sh
@@ -37,7 +41,7 @@ curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.E
 
 ## Data Sources
 
-Median across 11 providers, updated daily:
+Median across 11 providers, updated every 4 hours:
 
 | Provider          | Type   | Status                                                                                                                                                                                                                                   |
 | ----------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

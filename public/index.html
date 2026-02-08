@@ -10,8 +10,7 @@
       property="og:description"
       content="Daily exchange rates for 170+ currencies. Free JSON API."
     />
-    <meta property="og:image" content="https://currency-rates.github.io/logo.png" />
-    <meta property="og:url" content="https://currency-rates.github.io/" />
+    <meta property="og:image" content="logo.png" />
     <style>
       *,
       *::before,
@@ -500,9 +499,8 @@
   ...
 <span class="hl-brace">}</span></code></pre>
         <p class="api-note">
-          Rates are updated daily at ~23:00 UTC. Each rate is the median across
-          multiple providers (Aviasales, Coinbase, CoinGecko, CoinRanking,
-          OpenExchangeRates).
+          Rates are updated every 4 hours. Each rate is the median across
+          multiple providers.
         </p>
       </section>
     </div>
@@ -676,6 +674,13 @@
       }
 
       init()
+
+      document.querySelectorAll('.hl-url').forEach((el) => {
+        el.textContent = el.textContent.replace(
+          'https://currency-rates.github.io',
+          location.origin,
+        )
+      })
     </script>
   </body>
 </html>
