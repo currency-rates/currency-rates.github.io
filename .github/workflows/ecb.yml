@@ -1,9 +1,9 @@
-name: Frankfurter
+name: ECB
 
 on:
   pull_request:
   schedule:
-    - cron: '25 */4 * * *'
+    - cron: '45 */4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -19,14 +19,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: node src/frankfurter.js
+      - run: node src/ecb.js
       - if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add output/
           git diff --cached --quiet && exit 0
-          git commit -m "frankfurter $(date -u +'%Y-%m-%d %H:%M')"
+          git commit -m "ecb $(date -u +'%Y-%m-%d %H:%M')"
           for i in 1 2 3 4 5; do
             git pull --rebase origin master && git push && exit 0
             sleep $((i * 5))

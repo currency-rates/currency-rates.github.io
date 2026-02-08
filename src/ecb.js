@@ -7,16 +7,32 @@ const config = JSON.parse(
   readFileSync(join(__dirname, 'currencies.json'), 'utf8'),
 )
 
-const resp = await fetch('https://api.frankfurter.dev/v1/latest?base=CHF')
+const resp = await fetch(
+  'https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml',
+)
 if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`)
-const data = await resp.json()
+const xml = await resp.text()
 
-// Rates are already CHF-based when using ?base=CHF
+// ECB XML has <Cube currency="USD" rate="1.1794"/> entries
+// Rates are units of currency per 1 EUR
+const eurRates = {}
+for (const m of xml.matchAll(/currency='([A-Z]+)'\s+rate='([^']+)'/g)) {
+  eurRates[m[1]] = +m[2]
+}
+
+const eurPerChf = eurRates['CHF']
+if (!eurPerChf) throw new Error('CHF rate not found in ECB response')
+
 const rates = {}
-for (const [symbol, value] of Object.entries(data.rates)) {
-  const s = symbol.toUpperCase()
-  if (!(s in config)) continue
-  rates[s] = +value
+for (const [symbol, eurPerUnit] of Object.entries(eurRates)) {
+  if (!(symbol in config)) continue
+  // units of X per 1 CHF = eurRates[X] / eurRates[CHF]
+  rates[symbol] = eurPerUnit / eurPerChf
+}
+
+// EUR itself: 1 CHF = 1 / eurPerChf EUR
+if ('EUR' in config) {
+  rates['EUR'] = 1 / eurPerChf
 }
 
 const sorted = Object.keys(rates)
@@ -31,9 +47,9 @@ const date = now.toISOString().slice(0, 10)
 const dir = join(__dirname, '..', 'output', ...date.split('-'))
 mkdirSync(dir, { recursive: true })
 
-const outPath = join(dir, 'frankfurter.json')
+const outPath = join(dir, 'ecb.json')
 const output = {
-  provider: 'frankfurter',
+  provider: 'ecb',
   datetime: now.toISOString(),
   base: 'CHF',
   rates: sorted,
