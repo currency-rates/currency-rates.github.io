@@ -491,7 +491,7 @@
           <code>rates.json</code> returns an object mapping currency codes to
           their exchange rate relative to CHF:
         </p>
-        <pre><code><span class="hl-brace">{</span>
+        <pre><code id="ratesExample"><span class="hl-brace">{</span>
   <span class="hl-key">"EUR"</span>: <span class="hl-val">1.0902</span>,
   <span class="hl-key">"USD"</span>: <span class="hl-val">1.2861</span>,
   <span class="hl-key">"GBP"</span>: <span class="hl-val">0.9465</span>,
@@ -670,6 +670,16 @@
           subtitle.textContent = date
             ? `Base currency: CHF \u00B7 Updated ${date} UTC`
             : 'Base currency: CHF'
+
+          const example = document.getElementById('ratesExample')
+          const keys = ['EUR', 'USD', 'GBP', 'BTC']
+          const lines = keys
+            .filter((k) => rates[k])
+            .map(
+              (k) =>
+                `  <span class="hl-key">"${k}"</span>: <span class="hl-val">${formatRate(rates[k])}</span>,`,
+            )
+          example.innerHTML = `<span class="hl-brace">{</span>\n${lines.join('\n')}\n  ...\n<span class="hl-brace">}</span>`
 
           initConverter()
         } catch (e) {
