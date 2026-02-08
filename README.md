@@ -39,19 +39,19 @@ curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.E
 
 Median across 11 providers, updated daily:
 
-| Provider | Type | Auth |
-|---|---|---|
-| Aviasales | Fiat | - |
-| OpenExchangeRates | Fiat | Key |
-| Frankfurter (ECB) | Fiat | - |
-| ExchangeRate-API | Fiat | - |
-| FloatRates | Fiat | - |
-| NBP (Poland) | Fiat | - |
-| CNB (Czechia) | Fiat | - |
-| Coinbase | Crypto | Key |
-| CoinGecko | Crypto | - |
-| CoinRanking | Crypto | Key |
-| fawazahmed0 | Both | - |
+| Provider          | Type   | Auth |
+| ----------------- | ------ | ---- |
+| Aviasales         | Fiat   | -    |
+| OpenExchangeRates | Fiat   | Key  |
+| Frankfurter (ECB) | Fiat   | -    |
+| ExchangeRate-API  | Fiat   | -    |
+| FloatRates        | Fiat   | -    |
+| NBP (Poland)      | Fiat   | -    |
+| CNB (Czechia)     | Fiat   | -    |
+| Coinbase          | Crypto | Key  |
+| CoinGecko         | Crypto | -    |
+| CoinRanking       | Crypto | Key  |
+| fawazahmed0       | Both   | -    |
 
 Rates deviating >10% from median are flagged.
 

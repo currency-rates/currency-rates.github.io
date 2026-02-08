@@ -114,9 +114,18 @@ function main() {
   for (const [code, { name }] of Object.entries(crypto)) {
     names[code] = name
   }
+  const providers = {}
+  for (const [symbol, entries] of Object.entries(ratesMap)) {
+    providers[symbol] = entries.map((e) => e.provider).sort()
+  }
   writeFileSync(
     join(latestDir, 'meta.json'),
-    JSON.stringify({ date, count: Object.keys(sorted).length, names }),
+    JSON.stringify({
+      date,
+      count: Object.keys(sorted).length,
+      names,
+      providers,
+    }),
   )
 
   console.log(`Wrote ${Object.keys(sorted).length} rates for ${date}`)
