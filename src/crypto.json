@@ -1,0 +1,14 @@
+{
+  "BTC": {
+    "name": "Bitcoin",
+    "dp": 8
+  },
+  "DOGE": {
+    "name": "Dogecoin",
+    "dp": 8
+  },
+  "ETH": {
+    "name": "Ethereum",
+    "dp": 8
+  }
+}
