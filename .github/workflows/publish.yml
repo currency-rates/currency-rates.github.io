@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  combine:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -21,12 +21,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: node src/combine.js
+      - run: node src/publish.js
       - if: github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add rates/
-          git diff --cached --quiet || git commit -m "combine $(date -u +%Y-%m-%d)"
+          git diff --cached --quiet || git commit -m "publish $(date -u +%Y-%m-%d)"
           git pull --rebase
           git push

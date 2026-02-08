@@ -8,7 +8,7 @@ import {
   computeMedianRates,
   checkDeviations,
   checkCompleteness,
-} from './combine.js'
+} from './publish.js'
 
 describe('median', () => {
   it('returns the middle value for odd count', () => {
