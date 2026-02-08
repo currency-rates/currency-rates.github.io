@@ -492,10 +492,10 @@
           their exchange rate relative to CHF:
         </p>
         <pre><code><span class="hl-brace">{</span>
-  <span class="hl-key">"EUR"</span>: <span class="hl-val">1.0908</span>,
-  <span class="hl-key">"USD"</span>: <span class="hl-val">1.2892</span>,
-  <span class="hl-key">"GBP"</span>: <span class="hl-val">0.9468</span>,
-  <span class="hl-key">"BTC"</span>: <span class="hl-val">0.00001836</span>,
+  <span class="hl-key">"EUR"</span>: <span class="hl-val">1.0902</span>,
+  <span class="hl-key">"USD"</span>: <span class="hl-val">1.2861</span>,
+  <span class="hl-key">"GBP"</span>: <span class="hl-val">0.9465</span>,
+  <span class="hl-key">"BTC"</span>: <span class="hl-val">0.00001808</span>,
   ...
 <span class="hl-brace">}</span></code></pre>
         <p class="api-note">
@@ -649,9 +649,10 @@
 
       async function init() {
         try {
+          const cb = `?v=${Date.now()}`
           const [ratesRes, metaRes] = await Promise.all([
-            fetch('rates.json'),
-            fetch('meta.json').catch(() => null),
+            fetch('rates.json' + cb),
+            fetch('meta.json' + cb).catch(() => null),
           ])
 
           if (!ratesRes.ok) throw new Error('Failed to load rates')
