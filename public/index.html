@@ -72,113 +72,122 @@
       /* converter */
       .converter {
         background: #fff;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 20px 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        border-radius: 16px;
+        padding: 28px;
+        margin: 24px 0;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       }
 
       .converter-row {
         display: flex;
-        gap: 10px;
+        gap: 12px;
         align-items: stretch;
       }
 
-      .converter-field {
+      .converter-group {
         flex: 1;
+        min-width: 0;
+        background: #f8f9fb;
+        border: 1px solid #eaecf0;
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .converter-group:focus-within {
+        border-color: #1a1a2e;
+        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.06);
+      }
+
+      .converter-field {
         min-width: 0;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 4px;
       }
 
       .converter-field label {
         font-size: 11px;
         font-weight: 600;
-        color: #888;
+        color: #999;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       .converter-field input {
         width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 20px;
-        font-weight: 600;
+        padding: 6px 0;
+        border: none;
+        font-size: 28px;
+        font-weight: 700;
         outline: none;
         font-family:
-          'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
-          monospace;
-        transition: border-color 0.2s;
-        background: #fafafa;
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+          Arial, sans-serif;
+        background: transparent;
+        color: #1a1a2e;
       }
 
-      .converter-field input:focus {
-        border-color: #1a1a2e;
-        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08);
-        background: #fff;
+      .converter-field input::placeholder {
+        color: #ccc;
       }
 
       .converter-field select {
         width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+        padding: 8px 32px 8px 0;
+        border: none;
+        border-top: 1px solid #e2e4e9;
         font-size: 14px;
         font-weight: 600;
         outline: none;
-        background: #fafafa;
+        background: transparent;
         cursor: pointer;
-        transition: border-color 0.2s;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        color: #444;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23999' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 32px;
-      }
-
-      .converter-field select:focus {
-        border-color: #1a1a2e;
-        box-shadow: 0 0 0 3px rgba(26, 26, 46, 0.08);
+        background-position: right 4px center;
       }
 
       .converter-swap {
         display: flex;
-        align-items: flex-end;
-        padding-bottom: 4px;
+        align-items: center;
+        flex-shrink: 0;
       }
 
       .converter-swap button {
-        width: 40px;
-        height: 40px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background: #fafafa;
+        width: 44px;
+        height: 44px;
+        border: 2px solid #eaecf0;
+        border-radius: 50%;
+        background: #fff;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #666;
+        color: #1a1a2e;
         transition:
           background 0.2s,
-          border-color 0.2s;
+          border-color 0.2s,
+          transform 0.2s;
         flex-shrink: 0;
       }
 
       .converter-swap button:hover {
-        background: #f0f0f0;
+        background: #f0f2f5;
         border-color: #ccc;
+        transform: rotate(180deg);
       }
 
       .converter-info {
-        margin-top: 12px;
-        font-size: 13px;
-        color: #888;
-        font-family:
-          'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo,
-          monospace;
+        margin-top: 16px;
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+        font-weight: 500;
       }
 
       /* api docs */
@@ -313,26 +322,49 @@
         }
 
         .converter {
-          padding: 16px;
+          padding: 20px;
         }
 
         .converter-row {
           flex-direction: column;
-          gap: 12px;
+          gap: 0;
+        }
+
+        .converter-group {
+          border-radius: 12px;
+        }
+
+        .converter-row > .converter-group:first-child {
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+          border-bottom: none;
+        }
+
+        .converter-row > .converter-group:last-child {
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
         }
 
         .converter-swap {
           align-items: center;
           justify-content: center;
-          padding: 0;
+          margin: -22px auto;
+          position: relative;
+          z-index: 1;
+          height: 0;
         }
 
         .converter-swap button {
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           transform: rotate(90deg);
         }
 
+        .converter-swap button:hover {
+          transform: rotate(270deg);
+        }
+
         .converter-field input {
-          font-size: 18px;
+          font-size: 24px;
         }
 
       }
@@ -356,13 +388,21 @@
     <div class="container">
       <div class="converter" id="converter" style="display: none">
         <div class="converter-row">
-          <div class="converter-field">
-            <label for="fromAmount">Amount</label>
-            <input type="text" id="fromAmount" inputmode="decimal" value="1" />
-          </div>
-          <div class="converter-field">
-            <label for="fromCurrency">From</label>
-            <select id="fromCurrency"></select>
+          <div class="converter-group">
+            <div class="converter-field">
+              <label for="fromAmount">Amount</label>
+              <input
+                type="text"
+                id="fromAmount"
+                inputmode="decimal"
+                value="1"
+                placeholder="0"
+              />
+            </div>
+            <div class="converter-field">
+              <label for="fromCurrency">Currency</label>
+              <select id="fromCurrency"></select>
+            </div>
           </div>
           <div class="converter-swap">
             <button id="swapBtn" type="button" title="Swap currencies">
@@ -381,13 +421,20 @@
               </svg>
             </button>
           </div>
-          <div class="converter-field">
-            <label for="toAmount">Converted</label>
-            <input type="text" id="toAmount" inputmode="decimal" />
-          </div>
-          <div class="converter-field">
-            <label for="toCurrency">To</label>
-            <select id="toCurrency"></select>
+          <div class="converter-group">
+            <div class="converter-field">
+              <label for="toAmount">Converted</label>
+              <input
+                type="text"
+                id="toAmount"
+                inputmode="decimal"
+                placeholder="0"
+              />
+            </div>
+            <div class="converter-field">
+              <label for="toCurrency">Currency</label>
+              <select id="toCurrency"></select>
+            </div>
           </div>
         </div>
         <div class="converter-info" id="converterInfo"></div>
