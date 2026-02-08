@@ -78,7 +78,7 @@ function main() {
     ...Object.keys(crypto),
   ].sort()
 
-  const outputDir = join(__dirname, '..', 'output', date)
+  const outputDir = join(__dirname, '..', 'output', ...date.split('-'))
   const files = readdirSync(outputDir).filter((f) => f.endsWith('.json'))
 
   const providerFiles = []
@@ -108,7 +108,7 @@ function main() {
       return obj
     }, {})
 
-  const ratesDir = join(__dirname, '..', 'public', date)
+  const ratesDir = join(__dirname, '..', 'public', ...date.split('-'))
   mkdirSync(ratesDir, { recursive: true })
   writeFileSync(join(ratesDir, 'rates.json'), JSON.stringify(sorted, null, 2))
 

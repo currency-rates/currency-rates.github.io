@@ -30,7 +30,7 @@ curl https://currency-rates.github.io/rates.json
 Historical rates:
 
 ```sh
-curl https://currency-rates.github.io/2026-02-08/rates.json
+curl https://currency-rates.github.io/2026/02/08/rates.json
 ```
 
 With [fx](https://fx.wtf):

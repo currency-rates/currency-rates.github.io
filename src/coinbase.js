@@ -51,7 +51,7 @@ const sorted = Object.keys(rates)
 
 const now = new Date()
 const date = now.toISOString().slice(0, 10)
-const dir = join(__dirname, '..', 'output', date)
+const dir = join(__dirname, '..', 'output', ...date.split('-'))
 mkdirSync(dir, { recursive: true })
 
 const outPath = join(dir, 'coinbase.json')
