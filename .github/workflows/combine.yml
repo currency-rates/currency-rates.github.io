@@ -4,9 +4,8 @@ on:
   push:
     branches: [master]
   pull_request:
-  workflow_run:
-    workflows: [Aviasales, Coinbase, CoinGecko, Coinranking, OpenExchangeRates]
-    types: [completed]
+  schedule:
+    - cron: '0 23 * * *'
   workflow_dispatch:
 
 permissions:
@@ -23,7 +22,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node src/combine.js
-      - if: github.event_name != 'pull_request'
+      - if: github.event_name == 'schedule'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
