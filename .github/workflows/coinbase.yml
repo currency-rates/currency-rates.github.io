@@ -8,10 +8,6 @@ on:
     - cron: '10 8 * * *'
   workflow_dispatch:
 
-concurrency:
-  group: sync
-  cancel-in-progress: false
-
 permissions:
   contents: write
 
