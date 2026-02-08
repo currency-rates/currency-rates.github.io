@@ -24,7 +24,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node src/publish.js
-      - if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      - if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -34,7 +34,7 @@ jobs:
           git push
 
   deploy-pages:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'pull_request'
     needs: publish
     runs-on: ubuntu-latest
     environment:
