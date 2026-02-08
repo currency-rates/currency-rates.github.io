@@ -1,23 +1,16 @@
 # Currency Rates
 
-Daily exchange rates for 170+ fiat currencies and cryptocurrencies, published as static JSON on GitHub Pages.
+Daily exchange rates for 170+ fiat currencies and crypto, published as static JSON.
 
-Rates are aggregated from multiple providers and computed as a **median** for reliability. Base currency is **CHF** (
-Swiss franc).
+No auth. No API keys. No rate limits. Just `curl`.
 
-**Website:** https://currency-rates.github.io/
+Base currency: **CHF**
 
-## API
-
-No authentication, no rate limits, no API keys. Just static JSON served via GitHub Pages.
-
-### Get latest rates
+## Usage
 
 ```sh
 curl https://currency-rates.github.io/rates.json
 ```
-
-Returns an object mapping currency codes to CHF-based exchange rates:
 
 ```json
 {
@@ -29,59 +22,38 @@ Returns an object mapping currency codes to CHF-based exchange rates:
 }
 ```
 
-### Get rates for a specific date
+Historical rates:
 
 ```sh
-curl https://currency-rates.github.io/YYYY-MM-DD/rates.json
+curl https://currency-rates.github.io/2026-02-08/rates.json
 ```
 
-### Get metadata
-
-```sh
-curl https://currency-rates.github.io/meta.json
-```
-
-Returns the publish date, count, and currency names.
-
-### Examples with [fx](https://fx.wtf)
-
-Get a single rate:
+With [fx](https://fx.wtf):
 
 ```sh
 curl -s https://currency-rates.github.io/rates.json | fx .USD
-```
-
-Convert 100 USD to EUR:
-
-```sh
 curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.EUR'
 ```
 
-Interactive exploration:
+## Data Sources
 
-```sh
-curl -s https://currency-rates.github.io/rates.json | fx
-```
+Median across 11 providers, updated daily:
 
-## Data sources
+| Provider | Type | Auth |
+|---|---|---|
+| Aviasales | Fiat | - |
+| OpenExchangeRates | Fiat | Key |
+| Frankfurter (ECB) | Fiat | - |
+| ExchangeRate-API | Fiat | - |
+| FloatRates | Fiat | - |
+| NBP (Poland) | Fiat | - |
+| CNB (Czechia) | Fiat | - |
+| Coinbase | Crypto | Key |
+| CoinGecko | Crypto | - |
+| CoinRanking | Crypto | Key |
+| fawazahmed0 | Both | - |
 
-Rates are fetched daily from multiple providers and the median is used:
-
-| Provider          | Type   | Currencies     |
-| ----------------- | ------ | -------------- |
-| Aviasales         | Fiat   | 170+           |
-| OpenExchangeRates | Fiat   | 170+           |
-| Coinbase          | Crypto | BTC, ETH, DOGE |
-| CoinGecko         | Crypto | BTC, ETH, DOGE |
-| CoinRanking       | Crypto | BTC, ETH, DOGE |
-
-A rate is flagged if it deviates more than 10% from the median across providers.
-
-## Schedule
-
-- Provider rates are fetched daily at ~08:00-08:20 UTC
-- Median rates are published at ~23:00 UTC
-- The website and JSON endpoints are updated automatically via GitHub Pages
+Rates deviating >10% from median are flagged.
 
 ## Development
 
