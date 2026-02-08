@@ -42,20 +42,21 @@ curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.E
 
 ## Data Sources
 
-Median across 10 providers, updated every 4 hours:
+Median across 11 providers, updated every 4 hours:
 
-| Provider          | Type   | Status                                                                                                                                                                                                                                   |
-| ----------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Aviasales         | Fiat   | [![Aviasales](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/aviasales.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/aviasales.yml)                         |
-| OpenExchangeRates | Fiat   | [![OpenExchangeRates](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/openexchangerates.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/openexchangerates.yml) |
-| Frankfurter (ECB) | Fiat   | [![Frankfurter](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/frankfurter.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/frankfurter.yml)                   |
-| ExchangeRate-API  | Fiat   | [![ExchangeRate-API](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/exchangerate.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/exchangerate.yml)            |
-| FloatRates        | Fiat   | [![FloatRates](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/floatrates.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/floatrates.yml)                      |
-| NBP (Poland)      | Fiat   | [![NBP](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/nbp.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/nbp.yml)                                           |
-| CNB (Czechia)     | Fiat   | [![CNB](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/cnb.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/cnb.yml)                                           |
-| Coinbase          | Crypto | [![Coinbase](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml)                            |
-| CoinGecko         | Crypto | [![CoinGecko](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml)                         |
-| CoinRanking       | Crypto | [![CoinRanking](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml)                   |
+| Provider           | Type   | Status                                                                                                                                                                                                                                   |
+| ------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aviasales          | Fiat   | [![Aviasales](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/aviasales.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/aviasales.yml)                         |
+| OpenExchangeRates  | Fiat   | [![OpenExchangeRates](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/openexchangerates.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/openexchangerates.yml) |
+| Frankfurter (ECB)  | Fiat   | [![Frankfurter](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/frankfurter.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/frankfurter.yml)                   |
+| ExchangeRate-API   | Fiat   | [![ExchangeRate-API](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/exchangerate.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/exchangerate.yml)            |
+| FloatRates         | Fiat   | [![FloatRates](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/floatrates.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/floatrates.yml)                      |
+| NBP (Poland)       | Fiat   | [![NBP](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/nbp.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/nbp.yml)                                           |
+| CNB (Czechia)      | Fiat   | [![CNB](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/cnb.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/cnb.yml)                                           |
+| BAZG (Switzerland) | Fiat   | [![BAZG](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/bazg.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/bazg.yml)                                        |
+| Coinbase           | Crypto | [![Coinbase](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml)                            |
+| CoinGecko          | Crypto | [![CoinGecko](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml)                         |
+| CoinRanking        | Crypto | [![CoinRanking](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml)                   |
 
 Rates deviating >10% from median are flagged.
 
