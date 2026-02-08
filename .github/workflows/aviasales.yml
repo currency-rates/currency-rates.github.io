@@ -1,16 +1,10 @@
 name: Aviasales
 
 on:
-  push:
-    branches: [master]
   pull_request:
   schedule:
     - cron: '5 8 * * *'
   workflow_dispatch:
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
