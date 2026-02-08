@@ -42,7 +42,7 @@ curl -s https://currency-rates.github.io/rates.json | fx 'x => 100 / x.USD * x.E
 
 ## Data Sources
 
-Median across 11 providers, updated every 4 hours:
+Median across 10 providers, updated every 4 hours:
 
 | Provider          | Type   | Status                                                                                                                                                                                                                                   |
 | ----------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -56,7 +56,6 @@ Median across 11 providers, updated every 4 hours:
 | Coinbase          | Crypto | [![Coinbase](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinbase.yml)                            |
 | CoinGecko         | Crypto | [![CoinGecko](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coingecko.yml)                         |
 | CoinRanking       | Crypto | [![CoinRanking](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/coinranking.yml)                   |
-| fawazahmed0       | Both   | [![fawazahmed0](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/fawazahmed0.yml/badge.svg)](https://github.com/currency-rates/currency-rates.github.io/actions/workflows/fawazahmed0.yml)                   |
 
 Rates deviating >10% from median are flagged.
 
