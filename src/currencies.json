@@ -111,10 +111,6 @@
     "name": "Congolese franc",
     "dp": 2
   },
-  "CDN": {
-    "name": "Canadian dollar",
-    "dp": 2
-  },
   "CHF": {
     "name": "Swiss franc",
     "dp": 2
