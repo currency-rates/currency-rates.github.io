@@ -619,6 +619,10 @@
     "name": "Venezuelan bolívar",
     "dp": 2
   },
+  "VES": {
+    "name": "Venezuelan bolívar soberano",
+    "dp": 2
+  },
   "VND": {
     "name": "Vietnamese đồng",
     "dp": 0
