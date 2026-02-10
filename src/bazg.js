@@ -7,7 +7,15 @@ const config = JSON.parse(
   readFileSync(join(__dirname, 'currencies.json'), 'utf8'),
 )
 
-const resp = await fetch('https://www.backend-rates.bazg.admin.ch/api/xmldaily')
+const resp = await fetch(
+  'https://www.backend-rates.bazg.admin.ch/api/xmldaily',
+  {
+    headers: {
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    },
+  },
+)
 if (!resp.ok) throw new Error(`HTTP ${resp.status} ${resp.statusText}`)
 const xml = await resp.text()
 
